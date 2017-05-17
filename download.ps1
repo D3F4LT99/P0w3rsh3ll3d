@@ -14,7 +14,6 @@ $dev3 = $dev2.Lines
 $int = $dev3
 $filez = $dev[$int]
 $file = ($filez -split '\n')[0] 
-# $int = $int+6
 $int2 = $int2+1
 echo "[#] Downloading $file ..."
 if ($file) { 
