@@ -1,7 +1,7 @@
 #Takes imput file and pulls download links from it and saves the file.
 $net = New-Object Net.WebClient
 $link_grab = get-content .\linkz.txt
-#To download links list from a link comment the previous line and ncomment the next
+#To download links list from a link comment the previous line and uncomment the next
 #$link_grab = $net.DownloadString("(insert link to list here)")
 $int2 = 0
 for ($i = 0; $i -le $lines.Lines+999; $i++) { 
