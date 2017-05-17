@@ -1,2 +1,2 @@
 # P0w3rsh3ll3d
-Random snip-bits of code ive made in powershell in the past.
+This is just a repository of random powershell scripts ive made to do a wide variety of things like download files from a list of linka that works in powershell v2
