@@ -28,7 +28,7 @@ function Mass-Download {
 
 .LINK
 
-	http://www.github.com/D3F4LT99/Powershell/
+	http://www.github.com/D3F4LT99/P0w3rsh3ll3d/
 #>
 param (
         [Parameter(Mandatory = $True)]
