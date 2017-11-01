@@ -15,9 +15,9 @@ foreach ($comp in $networked_computers) {
 #$int3 = $in3+1
 echo "[#] Checking $kb against $comp to see if its installed..."
 get-hotfix -Id $kb -ComputerName $comp
-}
-$int2 = $int2+1
-}
-}
-}
+#}
+#$int2 = $int2+1
+#}
+#}
+#}
 }
