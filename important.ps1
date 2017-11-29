@@ -1,19 +1,5 @@
 <#
 #################################################
-# Group Policy Preferences Password check by:   #
-#      Nathan V                                 #
-#      Cyber Security Analyst                   #
-#      http://nathanv.com                       #
-#                                               #
-# For assistance and new versions contact       #
-#      nathan.v@gmail.com                       #
-# This file updated:                14 Dec 2012 #
-#################################################
-# This script (c)2012 Nathan V : License: GPLv2 #
-# This is free software, and you are welcome to #
-# redistribute it under certain conditions; See #
-# http://www.gnu.org/licenses/gpl.html          #
-#################################################
 # Based on Get-GPPPassword by:                  #
 #      Chris Campbell                           #
 #      www.obscuresecurity.blogspot.com         #
@@ -76,7 +62,7 @@ function parseUserName($path) {
 }
 
 #Function that decodes and decrypts password
-function decryptPassword {
+function decryptPassword($cPassword) {
     try {
 		if( $cPassword.Length -eq 0 ) {
 			return "Empty Password!"
@@ -111,7 +97,7 @@ function getGPO($path) {
 # Function to parse the XML, decrypt the key, and return the results.
 function parseDecrypt($path) {
     $cPassword = parsecPassword $path
-    $password = decryptPassword 
+    $password = decryptPassword $cPassword
     $newName = parseNewName $path
     $userName = parseUserName $path
     if ($localfile -eq $null) {$gpo = getGPO $path} else {$gpo = "Local file"}
