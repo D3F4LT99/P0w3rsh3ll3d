@@ -43,7 +43,7 @@ function cdir {
 }
 
 #Function to pull encrypted password string from groups.xml
-function parsecPassword {
+function parsecPassword($path) {
     try {
         [xml] $Xml = Get-Content ($Path)
         [string] $cPassword = $Xml.Groups.User.Properties.cpassword
@@ -51,7 +51,7 @@ function parsecPassword {
     return $cPassword
 }
 #Function to look to see if the administrator account is given a newname
-function parseNewName {
+function parseNewName($path) {
     try {
 		[xml] $Xml = Get-Content ($Path)
 		[string] $newName = $Xml.Groups.User.Properties.newName
@@ -63,7 +63,7 @@ function parseNewName {
     } catch { $newName = "Error" }
 }
 #Function to parse out the Username whose password is being specified
-function parseUserName {
+function parseUserName($path) {
     try {
         [xml] $Xml = Get-Content ($Path)
         [string] $userName = $Xml.Groups.User.Properties.userName
@@ -98,7 +98,7 @@ function decryptPassword {
 }
 
 # Function to find the policy name to locate where the password is valid
-function getGPO {
+function getGPO($path) {
     $guid = $Path.Substring(1,36)
     try {
         $gpoName = get-gpo -guid $guid | Select-Object -ExpandProperty DisplayName
@@ -110,11 +110,11 @@ function getGPO {
 
 # Function to parse the XML, decrypt the key, and return the results.
 function parseDecrypt($path) {
-    $cPassword = parsecPassword
-    $password = decryptPassword
-    $newName = parseNewName
-    $userName = parseUserName
-    if ($localfile -eq $null) {$gpo = getGPO} else {$gpo = "Local file"}
+    $cPassword = parsecPassword $path
+    $password = decryptPassword 
+    $newName = parseNewName $path
+    $userName = parseUserName $path
+    if ($localfile -eq $null) {$gpo = getGPO $path} else {$gpo = "Local file"}
     $results = "$username, $newName, $password, $gpo"
     return $results
 }
