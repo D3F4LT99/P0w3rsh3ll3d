@@ -103,7 +103,7 @@ if ($swf) {echo "[#] Downloaded $swf files of swf type."}
 $minute_c = get-date -uformat %M
 $day_c = get-date -uformat %d
 $hour_c = get-date -uformat %H
-$days = $day_c-$day_s
+$days = $day_s-$day_c
 $minutes = $minute_c-$minute_s
 $hours = $hour_c-$hour_s
 echo "[#] Time elapsed: Days: $days  Hours: $hours Min: $minutes "
