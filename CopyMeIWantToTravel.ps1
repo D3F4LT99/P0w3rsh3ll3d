@@ -138,7 +138,6 @@ function Detect-Debug {
 	}
 "@
 	
-	echo "`n[+] Detect Kernel-Mode Debugging"
 	
 	# (1) _SYSTEM_KERNEL_DEBUGGER_INFORMATION, kernel debugger detection
 	#-----------
@@ -147,12 +146,11 @@ function Detect-Debug {
 	$SystemInformationLength = New-Object Int
 	$CallResult = [Ntdll]::NtQuerySystemInformation(35, [ref]$SYSTEM_KERNEL_DEBUGGER_INFORMATION, $SYSTEM_KERNEL_DEBUGGER_INFORMATION_Size, [ref]$SystemInformationLength)
 	if ($SYSTEM_KERNEL_DEBUGGER_INFORMATION.DebuggerEnabled -And !$SYSTEM_KERNEL_DEBUGGER_INFORMATION.DebuggerNotPresent) {
-		echo "    [?] SystemKernelDebuggerInformation: Detected"
+		$debug1 = 1
 	} else {
-		echo "    [?] SystemKernelDebuggerInformation: False"
+		$debug1 = 0
 	}
 	
-	echo "`n[+] Detect User-Mode Debugging"
 	# (2) CloseHandle exception check, generates exception in debugger
 	#-----------
 	$hObject = 0x1 # Invalid handle
@@ -161,14 +159,14 @@ function Detect-Debug {
 		$CallResult = [Kernel32]::CloseHandle($hObject)
 	} catch {
 		$Exception = "Detected"
-	} echo "    [?] CloseHandle Exception: $Exception"
+	} echo "$Exception"
 	
 	# (3) IsDebuggerPresent
 	#-----------
 	if ([Kernel32]::IsDebuggerPresent()) {
-		echo "    [?] IsDebuggerPresent: Detected"
+		$debug1 &= 1
 	} else {
-		echo "    [?] IsDebuggerPresent: False"
+		$debug1 &= 0
 	}
 	
 	# (4) CheckRemoteDebuggerPresent --> calls NtQueryInformationProcess::ProcessDebugPort under the hood
@@ -177,10 +175,9 @@ function Detect-Debug {
 	$DebuggerPresent = [IntPtr]::Zero
 	$CallResult = [Kernel32]::CheckRemoteDebuggerPresent($ProcHandle, [ref]$DebuggerPresent)
 	if ($DebuggerPresent) {
-		echo "    [?] CheckRemoteDebuggerPresent: Detected"
+		$debug1 &= 1
 	} else {
-		echo "    [?] CheckRemoteDebuggerPresent: False"
-	}
+		$debug1 &= 0	}
 	
 	# (5-6) PEB BeingDebugged & NtGlobalFlag checks
 	#-----------
@@ -199,16 +196,16 @@ function Detect-Debug {
 	$PEBFlags = [system.runtime.interopservices.marshal]::PtrToStructure($NewIntPtr, [type]$PEB_BeingDebugged_NtGlobalFlag)
 	
 	if ($PEBFlags.BeingDebugged -eq 1) {
-		echo "    [?] PEB!BeingDebugged: Detected"
+		$debug1 &= 1
 	} else {
-		echo "    [?] PEB!BeingDebugged: False"
+		$debug1 &= 0
 	}
 	
 	# Our struct records what would be NtGlobalFlag for x32/x64
 	if ($PEBFlags.NtGlobalFlag32 -eq 0x70 -Or $PEBFlags.NtGlobalFlag64 -eq 0x70) {
-		echo "    [?] PEB!NtGlobalFlag: Detected"
+		$debug1 &= 1
 	} else {
-		echo "    [?] PEB!NtGlobalFlag: False"
+		$debug1 &= 0
 	}
 	
 	# (7) Debug parent from child
@@ -232,9 +229,8 @@ function Detect-Debug {
 		$OwnPID = [System.Diagnostics.Process]::GetCurrentProcess().Id
 		$ParentPID = (Get-WmiObject -Query "SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = $OwnPID").ParentProcessId
 		if (![Kernel32]::DebugActiveProcess($ParentPID)) {
-			echo "    [?] DebugSelf: Detected`n"
-		} else {
-			echo "    [?] DebugSelf: False`n"
+			$debug1 &= 1		} else {
+			$debug1 &= 0
 			$CallResult = [Kernel32]::DebugActiveProcessStop($ParentPID)
 		}
 	}
@@ -244,6 +240,7 @@ function Detect-Debug {
 	Wait-Job -Name Self_Debug| Out-Null
 	Receive-Job -Name Self_Debug
 	Remove-Job -Name Self_Debug
+	echo $debug1
 }
 function Invoke-DCOM {
 <#
