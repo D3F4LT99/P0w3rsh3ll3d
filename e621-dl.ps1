@@ -11,7 +11,7 @@ function e621-dl {
 	
 .DESCRIPTION
 
-    Downloads from e621's API pulling the tags from a file.
+    Downloads first 320 posts from e621's API pulling the tags from a file.
 
 .EXAMPLE
 
